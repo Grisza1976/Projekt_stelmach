@@ -11,8 +11,8 @@ require_once("connect.php");
 </head>
 <body>
     <div class="container">
-        <h1>WITAJ W BIBLIOTECE</h1>
-        <form action="zaloz.php" method="POST">
+        <header><img src="baner.jpg" alt="baner" class="baner"></header>
+        <form action="zaloz.php" method="POST" class="logowanie">
             <label>Login</label>
             <input type="text" name="login" required><br><br>
             <label>Hasło</label>
@@ -56,7 +56,7 @@ require_once("connect.php");
                 echo "Błąd podczas zakładania konta: ". mysqli_error($conn);
             }
         }
-        mysqli_close();
+        mysqli_close($conn);
         ?>
     </div>
 </body>
