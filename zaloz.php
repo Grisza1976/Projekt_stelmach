@@ -6,7 +6,7 @@ require_once("connect.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>logowanie</title>
+    <title>BIBLIOTEKA</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,29 +24,39 @@ require_once("connect.php");
             <label>Masz już konto?</label>
             <a href="login.php"><input type="button" value="Zaloguj sie"></a><br><br>
             <input type="submit" value="Załóż konto">
+            <input type="reset" value="Reset">
         </form>
         <?php
         if($_SERVER["REQUEST_METHOD"]==="POST"){
             $login = $_POST['login'];
-            $haslo = $_POST['password'];
-            $drugie_haslo = $_POST['secondpassword'];
-            $email = $_POST["email"];
             $zap_login = "SELECT klienci.login FROM klienci WHERE klienci.login = '$login'";
             $sql = mysqli_query($conn,$zap_login);
-            if(!$sql){
+            if(mysqli_num_rows($sql)>0){
                 echo "taki użytkownik już istnieje";
+                exit;
             }
-            echo "git";
+            $haslo = $_POST['password'];
+            $drugie_haslo = $_POST['secondpassword'];
             if($haslo !== $drugie_haslo){
                 echo "Hasła są różne";
+                exit;
+            }
+            $email = $_POST["email"];
+            $zap_email = "SELECT klienci.email FROM klienci WHERE klienci.email = '$email'";
+            $sql1 = mysqli_query($conn,$zap_email);
+            if(mysqli_num_rows($sql1)>0){
+                echo "taki email już istnieje";
+                exit;
             }
             $haszowane_haslo=password_hash($haslo,PASSWORD_BCRYPT);
-
-
+            $wstaw = "INSERT INTO klienci (login, haslo, email) VALUES ('$login', '$haszowane_haslo', '$email')";
+            if(mysqli_query($conn,$wstaw)){
+                header("Location:login.php");
+            }else{
+                echo "Błąd podczas zakładania konta: ". mysqli_error($conn);
+            }
         }
-        
-
-
+        mysqli_close();
         ?>
     </div>
 </body>
